@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Kagiri | 今日だけのSNS</title>
+  <!-- Google Fonts: Noto Sans JP (日本語) & Space Grotesk (英数ロゴ等) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+  <!-- スタイルシートの読み込み -->
+  <link rel="stylesheet" href="/src/style.css">
+  
+  <!-- PWA マニフェストとアプリアイコン、テーマカラーの設定 -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#e07a5f">
+  <link rel="apple-touch-icon" href="/app_icon.png">
+
+  <!-- Lucide Icons (CDN) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div id="app">
+    <!-- ==================== 入室画面 ==================== -->
+    <section id="intro-screen" class="screen" style="position: relative;">
+      <!-- 右上のインフォマークボタン -->
+      <button id="intro-about-btn" class="btn btn-icon" style="position: absolute; right: 16px; top: 16px; z-index: 100;" aria-label="Kagiriについての説明" title="Kagiriとは">
+        <i data-lucide="info" class="icon-orange"></i>
+      </button>
+
+      <div class="intro-container">
+        <!-- ロゴエリア (Bento Box 1) -->
+        <div class="bento-box logo-box">
+          <h1 class="logo-text">Kagiri</h1>
+          <span class="logo-sub">かぎり</span>
+          
+          <!-- 入室画面用カウントダウンタイマー -->
+          <div id="intro-countdown-timer" class="countdown-text-only" style="position: static; transform: none; margin: 16px 0; min-height: 38px;">
+            <span class="countdown-label">消滅まで</span>
+            <span class="countdown-time-val">--:--:--</span>
+          </div>
+
+          <p class="tagline">深夜0時にすべてが消える、<br>1日限りのSNS。</p>
+        </div>
+
+        <!-- アクションエリア (Bento Box 2) -->
+        <div class="bento-box action-box">
+          <form id="login-form">
+            <div class="input-group">
+              <label for="username">今日だけの名前</label>
+              <input type="text" id="username" placeholder="ニックネームを入力..." required maxlength="15" autocomplete="off">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">
+              <span>はじめる</span>
+              <i data-lucide="arrow-right"></i>
+            </button>
+          </form>
+        </div>
+
+        <!-- インフォエリア (Bento Box 3) -->
+        <div class="bento-box info-box">
+          <div class="info-item">
+            <i data-lucide="clock" class="icon-orange"></i>
+            <div>
+              <h3>24時間限定</h3>
+              <p>投稿、返信、お気に入り、名前は毎日深夜0時に完全に消去されます</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== タイムライン画面 ==================== -->
+    <section id="timeline-screen" class="screen hidden">
+      <header class="app-header">
+        <div class="header-logo">
+          <span class="logo-text-sm" id="about-logo" style="cursor: pointer;">Kagiri</span>
+        </div>
+
+        <!-- 画面上部中央の消滅カウントダウンタイマー（枠なし・改行構成） -->
+        <div id="countdown-timer" class="countdown-text-only" title="深夜0時にすべての投稿は消滅します">
+          <span class="countdown-label">消滅まで</span>
+          <span class="countdown-time-val">--:--:--</span>
+        </div>
+
+        <div class="header-actions" style="display: flex; gap: 12px;">
+          <button id="meltdown-btn" class="btn btn-icon" aria-label="消滅テスト" title="0時の消滅をテスト">
+            <i data-lucide="trash-2" class="icon-orange"></i>
+          </button>
+          <button id="theme-toggle" class="btn btn-icon" aria-label="テーマ切り替え">
+            <i data-lucide="moon" class="icon-orange"></i>
+          </button>
+        </div>
+      </header>
+
+      <main class="timeline-container">
+        <!-- フィルターコントロール (Bento Box) -->
+        <!-- タイムラインリスト (Bento Grid) -->
+        <div class="timeline-grid" id="timeline-posts">
+          <!-- JSで動的に投稿カードを挿入 -->
+        </div>
+      </main>
+
+    </section>
+
+    <!-- ==================== Kagiri説明モーダル ==================== -->
+    <div id="about-modal" class="modal-overlay hidden" style="z-index: 1500;">
+      <div class="modal-content bento-box" style="max-width: 500px; padding: 24px; text-align: center;">
+        <div class="modal-header" style="justify-content: center; position: relative;">
+          <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--accent-color);"><span class="logo-text-inline" style="font-size: 1.1em; font-weight: 900;">Kagiri</span> とは</h2>
+          <button id="close-about-btn" class="btn btn-icon" style="position: absolute; right: 0; top: 0;">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="about-body" style="margin-top: 16px; line-height: 1.8; text-align: left; font-size: 0.92rem; color: var(--text-color);">
+          <p><strong><span class="logo-text-inline">Kagiri</span>（かぎり）</strong>は、いまこの瞬間の思考や感情を書き留めるための、極限までシンプルな場所です。</p>
+          <p style="margin-top: 12px;">ここでのすべての言葉や共有された写真は、<strong>深夜の24時（0時）を迎えた瞬間に跡形もなく消え去ります。</strong></p>
+          <p style="margin-top: 12px;">データベースは存在せず、ログも残りません。次の日には、すべてがまっさらな状態から再び始まります。</p>
+          <p style="margin-top: 12px;">誰の目を気にすることもなく、この「限りある空間」にいまの気持ちをそっと預けてみませんか。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 新規投稿モーダル ==================== -->
+    <div id="post-modal" class="modal-overlay hidden">
+      <div class="modal-content bento-box">
+        <div class="modal-header">
+          <h2><span class="logo-text-inline" style="font-size: 1.1em; font-weight: 900;">Kagiri</span>を投稿する</h2>
+          <button id="close-modal-btn" class="btn btn-icon">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <form id="post-form">
+          <div class="input-group">
+            <textarea id="post-text" placeholder="いま思っていることを書き留めよう..." required maxlength="200" rows="4"></textarea>
+          </div>
+          
+          <!-- 画像プレビューエリア -->
+          <div class="image-upload-area">
+            <div class="image-previews" id="image-previews-container"></div>
+            <label for="post-images" class="image-upload-label">
+              <i data-lucide="image"></i>
+              <span>画像を追加 (最大2枚)</span>
+            </label>
+            <input type="file" id="post-images" accept="image/*" multiple class="hidden">
+          </div>
+
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-primary btn-block">
+              <span>投稿する</span>
+              <i data-lucide="send"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 画面下部固定ナビゲーション（初期非表示） -->
+    <div class="bento-box filter-box hidden">
+      <div class="tab-switch">
+        <button class="tab-btn active" data-tab="latest">
+          <i data-lucide="clock"></i>
+          <span>最新</span>
+        </button>
+        <button class="tab-btn" data-tab="shuffle">
+          <i data-lucide="shuffle"></i>
+          <span>シャッフル</span>
+        </button>
+        <button class="tab-btn" data-tab="favorites">
+          <i data-lucide="star"></i>
+          <span>お気に入り</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- フローティング投稿ボタン（初期非表示） -->
+    <button id="write-btn" class="btn btn-fab hidden" aria-label="新規投稿">
+      <i data-lucide="plus"></i>
+    </button>
+
+    <!-- ==================== 画像拡大モーダル ==================== -->
+    <div id="image-overlay" class="modal-overlay hidden" style="z-index: 2000; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); cursor: zoom-out;">
+      <div class="overlay-close-btn" style="position: absolute; top: 20px; right: 20px; cursor: pointer; color: white;">
+        <i data-lucide="x" style="width: 32px; height: 32px;"></i>
+      </div>
+      <img id="overlay-img" src="" alt="拡大画像" style="max-width: 95%; max-height: 90vh; object-fit: contain; border-radius: var(--radius-md); box-shadow: var(--glass-shadow);">
+    </div>
+  </div>
+
+  <!-- Viteによるメインスクリプト読み込み -->
+  <script type="module" src="/src/main.js"></script>
+
+  <!-- PWA サービスワーカーの登録 -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((reg) => console.log('ServiceWorker registered:', reg.scope))
+          .catch((err) => console.error('ServiceWorker registration failed:', err));
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "Kagiri",
+  "short_name": "Kagiri",
+  "description": "深夜0時にすべてが消える、1日限りのSNS。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d0e11",
+  "theme_color": "#e07a5f",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/app_icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
