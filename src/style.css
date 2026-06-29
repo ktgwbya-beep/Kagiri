@@ -630,13 +630,20 @@ a {
 /* 投稿カード */
 .post-card {
   position: relative;
-  display: inline-flex; /* カラム内で正しくブロック表示するために変更 */
-  flex-direction: column;
-  gap: 8px;
+  display: inline-block; /* Safariでのマルチカラム内の幅崩れ・描画バグを完全に回避 */
   overflow: hidden;
   width: 100%;
   margin-bottom: 12px; /* 縦方向のカード同士の隙間（スマホ用） */
-  break-inside: avoid; /* カードが途中で真っ二つに裂けて次の列にまたがるのを防ぐ */
+  break-inside: avoid; /* カードが途中で半分に分裂して隣のカラムにまたがるのを防ぐ */
+  -webkit-column-break-inside: avoid; /* iOS / Safari用の分裂防止策 */
+}
+
+/* inline-block化に伴い、gapプロパティの代わりとして子要素間にマージンを設定 */
+.post-card > * {
+  margin-bottom: 8px;
+}
+.post-card > *:last-child {
+  margin-bottom: 0;
 }
 
 @media (min-width: 640px) {
