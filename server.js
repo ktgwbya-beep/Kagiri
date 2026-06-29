@@ -1,7 +1,12 @@
 import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 5050;
+const PORT = process.env.PORT || 5050;
 
 // 画像（Base64）などの大容量データを受け取るための設定
 app.use(express.json({ limit: '20mb' }));
@@ -178,6 +183,14 @@ app.post('/api/posts/reset', (req, res) => {
   posts = [];
   console.log('APIトリガーにより投稿データが消滅しました。');
   res.json({ success: true, message: 'サーバー上の投稿を全て消滅させました。' });
+});
+
+// ビルドされた静的ファイル（distフォルダ）を配信する
+app.use(express.static(path.join(__dirname, 'dist')));
+
+// API以外のすべてのリクエストに対して、ビルドされたHTMLを返す
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 // サーバー起動
