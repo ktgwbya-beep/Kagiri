@@ -615,26 +615,34 @@ a {
 
 /* タイムライングリッド */
 .timeline-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0;
+  display: block;
+  column-count: 1;
+  column-gap: 0;
 }
 
 @media (min-width: 640px) {
   .timeline-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px; /* PCなど横長表示の時はグリッドとして綺麗に見せるためギャップを維持 */
-    align-items: start; /* 隣のカードに合わせて高さを引き伸ばさず、個々の本来の高さにする */
+    column-count: 2; /* PC時は自動的に2つの縦列にカードを分配 */
+    column-gap: 16px; /* 列の間の隙間 */
   }
 }
 
 /* 投稿カード */
 .post-card {
   position: relative;
-  display: flex;
+  display: inline-flex; /* カラム内で正しくブロック表示するために変更 */
   flex-direction: column;
   gap: 8px;
   overflow: hidden;
+  width: 100%;
+  margin-bottom: 12px; /* 縦方向のカード同士の隙間（スマホ用） */
+  break-inside: avoid; /* カードが途中で真っ二つに裂けて次の列にまたがるのを防ぐ */
+}
+
+@media (min-width: 640px) {
+  .post-card {
+    margin-bottom: 16px; /* 縦方向のカード同士の隙間（PC用） */
+  }
 }
 
 .post-header {
