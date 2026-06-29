@@ -166,9 +166,6 @@ function setupEventListeners() {
   document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
   document.getElementById('login-form')?.addEventListener('submit', handleLogin);
 
-  // デバッグ用消滅テスト
-  document.getElementById('meltdown-btn')?.addEventListener('click', triggerMidnightMeltdown);
-
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const tab = e.currentTarget.getAttribute('data-tab');
@@ -827,9 +824,12 @@ async function handleCreatePost(e) {
       closePostModal();
       renderTimeline();
 
-      // 新規カードへのふわっと表示アニメーション
+      // 新規カードへのふわっと表示アニメーション ＆ 自動スクロールジャンプ
       const newCard = document.getElementById(`post-${data.post.id}`);
       if (newCard) {
+        // 新しいカードの位置まで滑らかにスクロールして移動
+        newCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
         gsap.from(newCard, {
           scale: 0.8,
           opacity: 0,

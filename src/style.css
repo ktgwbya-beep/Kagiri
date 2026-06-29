@@ -624,6 +624,7 @@ a {
   .timeline-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px; /* PCなど横長表示の時はグリッドとして綺麗に見せるためギャップを維持 */
+    align-items: start; /* 隣のカードに合わせて高さを引き伸ばさず、個々の本来の高さにする */
   }
 }
 
