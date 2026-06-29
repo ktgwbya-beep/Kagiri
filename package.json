@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "concurrently": "^8.2.2",
+    "cors": "^2.8.5",
     "express": "^4.19.2",
     "gsap": "^3.12.5",
     "lucide": "^0.479.0",
