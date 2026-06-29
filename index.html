@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Kagiri | 深夜0時にすべてが消える、1日限りのSNS</title>
 
   <!-- SEO対策用メタタグ -->
@@ -27,6 +27,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
   <!-- スタイルシートの読み込み -->
+  <link rel="stylesheet" href="/src/style.css">
   
   <!-- PWA マニフェストとアプリアイコン、テーマカラーの設定 -->
   <link rel="manifest" href="/manifest.json">
@@ -35,8 +36,6 @@
 
   <!-- Lucide Icons (CDN) -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script type="module" crossorigin src="/assets/index-CORud4D6.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-DNqMZqvl.css">
 </head>
 <body>
   <div id="app">
@@ -212,6 +211,7 @@
   </div>
 
   <!-- Viteによるメインスクリプト読み込み -->
+  <script type="module" src="/src/main.js"></script>
 
   <!-- PWA サービスワーカーの登録 -->
   <script>

@@ -22,6 +22,12 @@ const state = {
   isSubmitting: false    // 新規投稿の送信中（連打防止）ロックフラグ
 };
 
+// ==================== API接続ベースURLの設定 ====================
+// ローカルでの検証時は空文字（相対パス）、本番（エックスサーバーなど）では自動的にRender.comのURLに接続先が切り替わります。
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? ''
+  : 'https://kagiri.onrender.com';
+
 // ==================== 2. ストレージ操作ヘルパー ====================
 function saveToStorage(key, value) {
   try {
@@ -52,7 +58,7 @@ function syncStorageData() {
 // 投稿一覧のロード
 async function loadPostsFromServer() {
   try {
-    const res = await fetch('/api/posts');
+    const res = await fetch(`${API_BASE_URL}/api/posts`);
     const data = await res.json();
     if (data.success) {
       state.posts = data.posts;
@@ -296,7 +302,7 @@ function renderTimeline() {
         <i data-lucide="inbox" style="margin: 0 auto 12px; width: 40px; height: 40px; color: var(--text-muted);"></i>
         <p style="font-weight: 700;">投稿がありません</p>
         <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
-          ${state.currentTab === 'favorites' ? 'いいねした投稿がここに表示されます。' : '最初のヒトヒラを投稿してみましょう！'}
+          ${state.currentTab === 'favorites' ? 'いいねした投稿がここに表示されます。' : '最初の投稿をしてみましょう！'}
         </p>
       </div>
     `;
@@ -412,7 +418,7 @@ async function handleLikeToggle(postId, buttonEl) {
   const isCurrentlyLiked = !!likesMap[postId];
 
   // サーバーへ「いいね」または「解除」を通知
-  const url = `/api/posts/${postId}/${isCurrentlyLiked ? 'unlike' : 'like'}`;
+  const url = `${API_BASE_URL}/api/posts/${postId}/${isCurrentlyLiked ? 'unlike' : 'like'}`;
   
   try {
     const res = await fetch(url, { method: 'POST' });
@@ -505,7 +511,7 @@ async function handleCommentSubmit(e, postId) {
   const commentAuthor = state.user.name || 'ゲスト';
 
   try {
-    const res = await fetch(`/api/posts/${postId}/comments`, {
+    const res = await fetch(`${API_BASE_URL}/api/posts/${postId}/comments`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -805,7 +811,7 @@ async function handleCreatePost(e) {
   }
 
   try {
-    const res = await fetch('/api/posts', {
+    const res = await fetch(`${API_BASE_URL}/api/posts`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -881,7 +887,7 @@ async function triggerMidnightMeltdown() {
 
   // 1. サーバーのインメモリデータをリセット
   try {
-    await fetch('/api/posts/reset', { method: 'POST' });
+    await fetch(`${API_BASE_URL}/api/posts/reset`, { method: 'POST' });
   } catch (e) {
     console.error('サーバーデータのリセットに失敗しました:', e);
   }

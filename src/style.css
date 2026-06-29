@@ -1,5 +1,6 @@
 /* ==================== 1. 変数とテーマ定義 ==================== */
 :root {
+  color-scheme: light;
   /* 明るいモード */
   --bg-gradient: linear-gradient(135deg, #eef2f3 0%, #e3eeff 100%);
   --glass-bg: rgba(255, 255, 255, 0.45);        /* 磨りガラスの白背景 */
@@ -26,6 +27,7 @@
 }
 
 [data-theme="dark"] {
+  color-scheme: dark;
   /* 暗いモード */
   --bg-gradient: linear-gradient(135deg, #090d16 0%, #111524 100%);
   --glass-bg: rgba(15, 23, 42, 0.45);           /* 磨りガラスの黒背景 */
@@ -58,9 +60,9 @@ body {
   color: var(--text-color);
   transition: background 0.4s ease, color 0.3s ease;
   overflow-x: hidden;
-  overflow-y: hidden; /* トップページ（入室前）は縦スクロールを完全に禁止 */
-  height: 100vh;
-  height: 100dvh;
+  overflow-y: auto; /* 小さい画面サイズで切れて操作不能になるのを防ぐため、自動スクロールを許可 */
+  min-height: 100vh;
+  min-height: 100dvh;
   position: relative;
 }
 
@@ -119,6 +121,13 @@ button, input, textarea {
   border: none;
   outline: none;
   background: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
 }
 
 a {
@@ -230,7 +239,7 @@ a {
 .btn-fab,
 [data-theme="dark"] .btn-fab {
   position: fixed;
-  bottom: 84px; /* 下部ナビゲーションバー(高さ約54px)の上に綺麗に浮くように配置 */
+  bottom: calc(84px + env(safe-area-inset-bottom)); /* 下部ナビゲーションバーの上に綺麗に浮くように配置（セーフエリア自動対応） */
   right: 32px;
   width: 68px;
   height: 68px;
@@ -287,6 +296,16 @@ a {
   box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.03);
   font-weight: 500;
   transition: border-color 0.2s, background-color 0.3s;
+  -webkit-appearance: none; /* iOS特有の強制スタイルを解除 */
+  appearance: none;
+  color: var(--text-color) !important;
+}
+
+/* プレースホルダーの文字色を統一 */
+.input-group input::placeholder,
+.input-group textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
 }
 
 .input-group input:focus, .input-group textarea:focus {
@@ -538,7 +557,7 @@ a {
   width: 100%;
   max-width: 760px;
   z-index: 900;
-  padding: 8px 16px;
+  padding: 8px 16px calc(8px + env(safe-area-inset-bottom)); /* iPhone最下部のホームバーとの重なりを防ぐセーフエリア対応 */
   border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important;
   background: var(--glass-bg);
   backdrop-filter: blur(20px) saturate(180%);
