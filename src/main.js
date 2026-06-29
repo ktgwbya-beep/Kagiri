@@ -295,7 +295,7 @@ function renderTimeline() {
 
   if (filteredPosts.length === 0) {
     container.innerHTML = `
-      <div class="bento-box info-box" style="grid-column: 1 / -1; text-align: center; padding: 40px 20px;">
+      <div class="bento-box info-box" style="column-span: all; -webkit-column-span: all; text-align: center; padding: 40px 20px; width: 100%;">
         <i data-lucide="inbox" style="margin: 0 auto 12px; width: 40px; height: 40px; color: var(--text-muted);"></i>
         <p style="font-weight: 700;">投稿がありません</p>
         <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
