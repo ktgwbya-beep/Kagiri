@@ -17,55 +17,37 @@ app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
 // ==================== インメモリデータ管理 ====================
-let posts = [
+const DEFAULT_POSTS = [
   {
     id: 'dummy-1',
-    author: 'ミナト',
-    time: '10分前',
-    text: 'Bento UIデザインで作られた「Kagiri」いい感じですね！シンプルで洗練されたテイストが可愛い。',
-    images: ['https://picsum.photos/600/600?random=1'],
-    likes: 4,
-    comments: [
-      {
-        id: 'c1',
-        author: 'タクミ',
-        text: 'すっきりしたシンプルなデザインに調整されて、さらに見やすくなりましたね！',
-        time: '5分前'
-      }
-    ]
+    author: 'Kagiriコンセプト',
+    time: '只今',
+    text: '【Kagiriへようこそ】\n\nKagiriは、いまこの瞬間の思考や感情を誰の目も気にせずそっと書き留めるための、1日限りのSNSです。\n\nここでのすべての投稿や共有された写真は、深夜24時（0時）を迎えた瞬間に跡形もなく消え去ります。次の日には、すべてがまっさらな新しい一日から始まります。',
+    images: [],
+    likes: 3,
+    comments: []
   },
   {
     id: 'dummy-2',
-    author: 'アカリ',
-    time: '25分前',
-    text: '今日の夕飯はちょっと豪華にオムライス。たまごがふわふわにできました。画像2枚投稿のテストです！',
-    images: ['https://picsum.photos/600/600?random=2', 'https://picsum.photos/600/600?random=3'],
-    likes: 12,
-    comments: [
-      {
-        id: 'c2',
-        author: 'ソウタ',
-        text: 'めちゃくちゃうまそう！お腹空いてきました。',
-        time: '15分前'
-      },
-      {
-        id: 'c3',
-        author: 'アカリ',
-        time: '10分前',
-        text: 'ありがとう！バターを多めに入れるのがコツです。'
-      }
-    ]
+    author: 'Kagiriの使い方',
+    time: '只今',
+    text: '【Kagiriの楽しみ方】\n\n1. いまの気分や写真を投稿してみましょう。\n2. タイムラインの「シャッフル」タブで、誰かの言葉との一期一会の出会いを楽しめます。\n3. スマートフォンのホーム画面にアプリとして登録（PWA追加）すると、ブラウザのURL枠のない全画面表示でより快適に利用できます。',
+    images: [],
+    likes: 1,
+    comments: []
   },
   {
     id: 'dummy-3',
-    author: '匿名ヒト',
-    time: '1時間前',
-    text: '深夜0時に全部消えてしまうっていうコンセプト、すごく惹かれる。今日あった嫌なことも、全部溶けて消えちゃえ！',
+    author: 'Kagiriのルール',
+    time: '只今',
+    text: '【今日だけの名前】\n\n登録したニックネームも本日限り。翌日には自動的にログアウトされ、新しい名前を入力して一日が始まります。データベースもログも一切残りませんので、どうか安心していまの気持ちをそっと預けてください。',
     images: [],
-    likes: 8,
+    likes: 2,
     comments: []
   }
 ];
+
+let posts = [...DEFAULT_POSTS];
 
 // ==================== 深夜0時の自動データ消滅タイマー ====================
 // 30秒ごとに時間を監視し、0時0分になったらインメモリの投稿データを消去
@@ -78,7 +60,7 @@ setInterval(() => {
   // 日付が変わったタイミングでリセット
   if (currentDate !== lastClearedDate && now.getHours() === 0 && now.getMinutes() === 0) {
     console.log('深夜0時を迎えました。すべてのインメモリ投稿をリセットします。');
-    posts = [];
+    posts = [...DEFAULT_POSTS];
     lastClearedDate = currentDate;
   }
 }, 30000); // 30秒ごとに実行
@@ -184,9 +166,9 @@ app.post('/api/posts/:id/comments', (req, res) => {
 
 // デバッグ用手動リセットAPI（クライアントからの消滅テスト連動用）
 app.post('/api/posts/reset', (req, res) => {
-  posts = [];
-  console.log('APIトリガーにより投稿データが消滅しました。');
-  res.json({ success: true, message: 'サーバー上の投稿を全て消滅させました。' });
+  posts = [...DEFAULT_POSTS];
+  console.log('APIトリガーにより投稿データが消滅し、初期ガイド投稿がセットされました。');
+  res.json({ success: true, message: 'サーバー上の投稿を全て消滅させ、ガイドをセットしました。' });
 });
 
 // ビルドされた静的ファイル（distフォルダ）を配信する
